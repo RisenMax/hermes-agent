@@ -28,6 +28,22 @@ Secrets are intentionally not committed. Configure these in Railway variables:
 - `HERMES_DASHBOARD_BASIC_AUTH_USERNAME`
 - `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`
 - `HERMES_DASHBOARD_BASIC_AUTH_SECRET`
+- `OPENROUTER_API_KEY`
+- `TELEGRAM_BOT_TOKEN`
+- `TELEGRAM_ALLOWED_USERS`
+
+Use these placeholder shapes when adding the model and Telegram variables in
+Railway:
+
+```text
+OPENROUTER_API_KEY=sk-or-v1-REPLACE_WITH_OPENROUTER_KEY
+TELEGRAM_BOT_TOKEN=1234567890:REPLACE_WITH_BOTFATHER_TOKEN
+TELEGRAM_ALLOWED_USERS=123456789,987654321
+```
+
+`TELEGRAM_ALLOWED_USERS` should contain numeric Telegram user IDs, separated by
+commas. Do not set fake placeholder values on a live service; add these
+Railway variables only when replacing the placeholders with real secret values.
 
 Use a persistent Railway volume mounted at `/opt/data` for Hermes state.
 
