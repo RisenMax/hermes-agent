@@ -1,0 +1,8 @@
+FROM nousresearch/hermes-agent:latest
+
+EXPOSE 9119
+
+# Keep the base image's /init entrypoint running so s6 can supervise the
+# dashboard service. Railway start-command overrides replace ENTRYPOINT, so the
+# long-lived command belongs in CMD instead.
+CMD ["sleep", "infinity"]
