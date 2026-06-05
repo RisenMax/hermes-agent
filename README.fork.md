@@ -8,6 +8,9 @@ wiring for a hosted dashboard.
 - Added `Dockerfile.railway`.
   - Uses the published `nousresearch/hermes-agent:latest` image instead of
     rebuilding the full upstream image in Railway.
+  - Enables the dashboard for Railway and binds it to `0.0.0.0:9119`.
+  - Sets `PORT=9119` for Railway's HTTP routing.
+  - Starts the gateway on first boot for fresh Railway volumes.
   - Exposes dashboard port `9119`.
   - Keeps the base image entrypoint active and uses `sleep infinity` as the
     container command so the s6-supervised dashboard service can keep running.
@@ -19,21 +22,29 @@ wiring for a hosted dashboard.
 
 ## Railway runtime configuration
 
-Secrets are intentionally not committed. Configure these in Railway variables:
+This fork is deployable from Railway by connecting the GitHub repo and using the
+included Dockerfile. The container will start, expose the dashboard on port
+`9119`, and keep Hermes state under `/opt/data` when a Railway volume is
+attached there.
 
-- `HERMES_DASHBOARD=true`
-- `HERMES_DASHBOARD_HOST=0.0.0.0`
-- `HERMES_DASHBOARD_PORT=9119`
-- `PORT=9119`
+Secrets are intentionally not committed. Configure these in Railway variables
+before exposing the dashboard publicly:
+
 - `HERMES_DASHBOARD_BASIC_AUTH_USERNAME`
 - `HERMES_DASHBOARD_BASIC_AUTH_PASSWORD`
+
+Optional but recommended for stable dashboard sessions:
+
 - `HERMES_DASHBOARD_BASIC_AUTH_SECRET`
+
+Optional integrations:
+
 - `OPENROUTER_API_KEY`
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_ALLOWED_USERS`
 
-Use these placeholder shapes when adding the model and Telegram variables in
-Railway:
+Use these placeholder shapes when adding model and Telegram variables in
+Railway, but replace them with real values before saving:
 
 ```text
 OPENROUTER_API_KEY=sk-or-v1-REPLACE_WITH_OPENROUTER_KEY
@@ -44,6 +55,9 @@ TELEGRAM_ALLOWED_USERS=123456789,987654321
 `TELEGRAM_ALLOWED_USERS` should contain numeric Telegram user IDs, separated by
 commas. Do not set fake placeholder values on a live service; add these
 Railway variables only when replacing the placeholders with real secret values.
+
+Railway hides variable values, not variable names. Keep non-secret runtime
+defaults in the Dockerfile; keep credentials in Railway variables.
 
 Use a persistent Railway volume mounted at `/opt/data` for Hermes state.
 
