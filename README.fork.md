@@ -60,6 +60,12 @@ Railway hides variable values, not variable names. Keep non-secret runtime
 defaults in the Dockerfile; keep credentials in Railway variables.
 
 Use a persistent Railway volume mounted at `/opt/data` for Hermes state.
+Hermes also reads `/opt/data/.env` from that volume. Values in that file can
+shadow Railway variables, so avoid storing `OPENROUTER_API_KEY`,
+`TELEGRAM_BOT_TOKEN`, or `TELEGRAM_ALLOWED_USERS` there for Railway deploys
+unless you intentionally want the volume `.env` to be the source of truth.
+If provider authentication fails even though the Railway variable is set, check
+for a stale key in `/opt/data/.env`.
 
 If deploying the Docker Hub image directly as a Railway image service, preserve
 the upstream image entrypoint by setting the service start command to:
